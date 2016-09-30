@@ -7,7 +7,7 @@ import './styles.scss';
 import rootReducer from './reducers/index';
 import TwentyFourtyEight from './containers/TwentyFourtyEight';
 
-let store = createStore(rootReducer);
+let store = createStore(rootReducer, window.devToolsExtension && window.devToolsExtension());
 
 render(
   <Provider store={store}>

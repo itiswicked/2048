@@ -1,3 +1,8 @@
+h1 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
 .game {
   display: flex;
   justify-content: center;
@@ -9,5 +14,52 @@
   align-items: center;
   width: 100px;
   height: 100px;
-  border: 2px solid black;
+  border: 1px solid black;
+}
+
+$beige:  rgba(238, 228, 218, 0.35); // 0
+$light-tan: #eee4da; // 2
+$tan: #ede0c8; // 4
+$light-orange: #f2b179; // 8
+$orange: #f59563;// 16
+$sunset: #f67c5f; // 32
+$deep-sunset: #f65e3b; // 64
+$yellow: #edcf72; // 128
+
+$dark-font: #776e65;
+
+.beige {
+  background-color: $beige;
+  color: $dark-font;
+}
+
+.light-tan {
+  background-color: $light-tan;
+  color: $dark-font;
+
+}
+
+.tan {
+  background-color: $tan;
+  color: $dark-font;
+}
+
+.light-orange {
+  background-color: $light-orange;
+}
+
+.orange {
+  background-color: $orange;
+}
+
+.sunset {
+  background-color: $sunset;
+}
+
+.deep-sunset {
+  background-color: $deep-sunset;
+}
+
+.yellow {
+  background-color: $yellow;
 }

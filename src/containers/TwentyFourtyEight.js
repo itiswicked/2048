@@ -4,7 +4,7 @@ import hotkey from 'react-hotkey';
 
 import Cell from '../components/Cell';
 import Row from '../components/Row';
-
+import { moveLeft, moveRight, moveUp, moveDown } from './../actions/board';
 
 hotkey.activate();
 class TwentyFourtyEight extends React.Component {
@@ -14,7 +14,6 @@ class TwentyFourtyEight extends React.Component {
   }
 
   handleHotkey(e) {
-    // debugger;
     let { moveLeft, moveRight, moveUp, moveDown } = this.props
     switch(e.key) {
       case 'ArrowLeft':
@@ -67,18 +66,18 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     moveLeft: () => {
-      console.log("Left!")
+      dispatch(moveLeft())
     },
 
     moveRight: () => {
-      console.log("Right!")
+      dispatch(moveRight())
     },
 
     moveUp: () => {
-      console.log("Up!")
+      dispatch(moveUp())
     },
     moveDown: () => {
-      console.log("Down!")
+      dispatch(moveDown())
     }
   }
 }
