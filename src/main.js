@@ -1,9 +1,17 @@
-import { createStore, combineReducers } from 'redux';
-import React, { PropTypes } from 'react';
-import ReactDOM from 'react-dom';
+import { createStore } from 'redux';
+import React from 'react';
+import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 
-ReactDOM.render(
-  <p>"Hello, World!"</p>,
+import './styles.scss';
+import rootReducer from './reducers/index';
+import TwentyFourtyEight from './containers/TwentyFourtyEight';
+
+let store = createStore(rootReducer);
+
+render(
+  <Provider store={store}>
+    <TwentyFourtyEight />
+  </Provider>,
   document.getElementById('app')
-)
+);
