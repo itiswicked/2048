@@ -4,13 +4,6 @@ import { compose } from 'underscore';
 
 import { MOVE_LEFT, MOVE_RIGHT, MOVE_UP, MOVE_DOWN } from './../actions/board';
 
-let foldTest = [
-  [2,2,2,8],
-  [4,4,2,0],
-  [0,8,0,8],
-  [0,2,4,0]
-]
-
 
 let theBoard = [
   [0,0,0,0],
