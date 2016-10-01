@@ -28,7 +28,7 @@ function coordinatesFromIndex(board, index) {
   board.forEach((row, yIndex) => {
     row.forEach((cell, xIndex) => {
       if(count === index) {
-        coordinates = {x: xIndex, y: yIndex }
+        coordinates = { x: xIndex, y: yIndex }
       }
       count += 1
     });
@@ -96,63 +96,88 @@ function fold(board) {
   })
 }
 
-let emptyNodes = findEmptyNodes(theBoard);
-let boardWithOneTile = populateRandomTile(emptyNodes, theBoard);
-emptyNodes = findEmptyNodes(boardWithOneTile);
-let boardWithTwoTiles = populateRandomTile(emptyNodes, boardWithOneTile);
+function populateBoard(board) {
+  let emptyNodes = findEmptyNodes(board);
+  return populateRandomTile(emptyNodes, board)
+}
+
+function boardTranslatedLeft(board) {
+  let newLeftBoard = compose(
+      collapse,
+      fold,
+      collapse
+  )(board);
+  return populateBoard(newLeftBoard);
+}
+
+function boardTranslatedRight(board) {
+  let newRightBoard = compose(
+    rotateBoardCW,
+    rotateBoardCW,
+    collapse,
+    fold,
+    collapse,
+    rotateBoardCCW,
+    rotateBoardCCW
+  )(board);
+  return populateBoard(newRightBoard);
+}
+
+function boardTranslatedUp(board) {
+  let newUpBoard = compose(
+    rotateBoardCW,
+    collapse,
+    fold,
+    collapse,
+    rotateBoardCCW
+  )(board);
+  return populateBoard(newUpBoard)
+}
+
+function boardTranslatedDown(board) {
+  let newDownBoard = compose(
+    rotateBoardCCW,
+    collapse,
+    fold,
+    collapse,
+    rotateBoardCW
+  )(board);
+  return populateBoard(newDownBoard)
+}
+
+function boardWithTwoTiles(board) {
+  let emptyNodes = findEmptyNodes(board);
+  let boardWithOneTile = populateRandomTile(emptyNodes, board);
+  emptyNodes = findEmptyNodes(boardWithOneTile);
+  return populateRandomTile(emptyNodes, boardWithOneTile);
+}
+
 let initialState = {
-  board: boardWithTwoTiles
+  board: boardWithTwoTiles(theBoard)
 }
 
 const board = function(state = initialState, action) {
+  let { board } = state;
   switch(action.type) {
     case MOVE_LEFT:
-      let newLeftBoard = compose(collapse, fold, collapse)(state.board);
-      let emptyLeftNodes = findEmptyNodes(newLeftBoard);
-      let populatedLeftBoard = populateRandomTile(emptyLeftNodes, newLeftBoard)
       return Object.assign({}, state, {
-        board: populatedLeftBoard
+        board: boardTranslatedLeft(board)
       });
     case MOVE_RIGHT:
-      let newRightBoard = compose(
-        rotateBoardCW,
-        rotateBoardCW,
-        collapse,
-        fold,
-        collapse,
-        rotateBoardCCW,
-        rotateBoardCCW
-      )(state.board);
-      let emptyRightNodes = findEmptyNodes(newRightBoard);
-      let populatedRightBoard = populateRandomTile(emptyRightNodes, newRightBoard)
       return Object.assign({}, state, {
-        board: populatedRightBoard
+        board: boardTranslatedRight(board)
       });
     case MOVE_UP:
-      let newUpBoard = compose(
-        rotateBoardCW,
-        collapse,
-        fold,
-        collapse,
-        rotateBoardCCW
-      )(state.board);
-      let emptyUpNodes = findEmptyNodes(newUpBoard);
-      let populatedUpBoard = populateRandomTile(emptyUpNodes, newUpBoard)
+      // if userCanMoveUp(board)
+          // do all this
+      // else
+        // return state
       return Object.assign({}, state, {
-        board: populatedUpBoard
+        board: boardTranslatedUp(board)
       });
     case MOVE_DOWN:
-      let newDownBoard = compose(
-        rotateBoardCCW,
-        collapse,
-        fold,
-        collapse,
-        rotateBoardCW
-      )(state.board);
-      let emptyDownNodes = findEmptyNodes(newDownBoard);
-      let populatedDownBoard = populateRandomTile(emptyNodes , newDownBoard)
       return Object.assign({}, state, {
-        board: populatedDownBoard
+        board: boardTranslatedDown(board)
       });
     default:
       return state;
