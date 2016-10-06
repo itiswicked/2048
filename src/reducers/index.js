@@ -4,6 +4,20 @@ import { compose } from 'underscore';
 
 import { MOVE_LEFT, MOVE_RIGHT, MOVE_UP, MOVE_DOWN } from './../actions/board';
 
+function reverse(array) {
+  let newArray = []
+  for(let i = array.length - 1; i > -1; i--) {
+    newArray.push(array[i])
+  }
+  return newArray;
+}
+
+// let rightTest = [
+//   [0,0,0,2],
+//   [0,0,0,2],
+//   [0,0,0,2],
+//   [0,0,0,2]
+// ];
 
 let theBoard = [
   [0,0,0,0],
@@ -38,6 +52,7 @@ function coordinatesFromIndex(board, index) {
 
 function populateRandomTile(emptyNodes, board) {
   let options = [2, 4];
+  // let index = compose(shuffle, sample)(emptyNodes);
   let index = sample(shuffle(emptyNodes));
   let coord = coordinatesFromIndex(board, index);
   return board.map((row , yIndex) => {
@@ -67,7 +82,7 @@ function rotateBoardCCW(board) {
 
 function collapseRow(row, index) {
   let filler = [0,0,0,0];
-  let compactedRow = compact(row);
+  let compactedRow = cojasmpact(row);
   return filler.map((zero, index) => {
     if(compactedRow[index]) {
       return compactedRow[index]
@@ -85,15 +100,20 @@ function collapse(board) {
 // merges adjacent, like numbers together
 // called after collapse stage
 function fold(board) {
-  return board.map(row => {
-    for(let i = 0; i < row.length; i++) {
-      if(row[i] === row[i+1]) {
-        row[i] *= 2
-        row[i+1] = 0
+  let previousHasChanged = false
+  return  board.map(row => {
+    return row.map((cell, index) => {
+      if(previousHasChanged) {
+        previousHasChanged = false
+        return 0;
+      } else if(cell === row[index + 1]) {
+        previousHasChanged = true
+        return cell * 2;
+      } else {
+        return cell;
       }
-    }
-    return row;
-  })
+    });
+  });
 }
 
 function populateBoard(board) {
@@ -102,16 +122,15 @@ function populateBoard(board) {
 }
 
 function boardTranslatedLeft(board) {
-  let newLeftBoard = compose(
-      collapse,
-      fold,
-      collapse
+  return compose(
+    collapse,
+    fold,
+    collapse
   )(board);
-  return populateBoard(newLeftBoard);
 }
 
 function boardTranslatedRight(board) {
-  let newRightBoard = compose(
+  return compose(
     rotateBoardCW,
     rotateBoardCW,
     collapse,
@@ -120,29 +139,26 @@ function boardTranslatedRight(board) {
     rotateBoardCCW,
     rotateBoardCCW
   )(board);
-  return populateBoard(newRightBoard);
 }
 
 function boardTranslatedUp(board) {
-  let newUpBoard = compose(
+  return compose(
     rotateBoardCW,
     collapse,
     fold,
     collapse,
     rotateBoardCCW
   )(board);
-  return populateBoard(newUpBoard)
 }
 
 function boardTranslatedDown(board) {
-  let newDownBoard = compose(
+  return compose(
     rotateBoardCCW,
     collapse,
     fold,
     collapse,
     rotateBoardCW
   )(board);
-  return populateBoard(newDownBoard)
 }
 
 function boardWithTwoTiles(board) {
@@ -152,34 +168,67 @@ function boardWithTwoTiles(board) {
   return populateRandomTile(emptyNodes, boardWithOneTile);
 }
 
+function userCanMove(oldBoard, newBoard) {
+  return !(flatten(oldBoard).join("") === flatten(newBoard).join(""));
+}
+
 let initialState = {
   board: boardWithTwoTiles(theBoard)
 }
-
+//
+// let initialState = {
+//   board: rightTest
+// }
 const board = function(state = initialState, action) {
-  let { board } = state;
+  console.log("Reducer called!");
   switch(action.type) {
     case MOVE_LEFT:
-      return Object.assign({}, state, {
-        board: boardTranslatedLeft(board)
-      });
+      let newLeftBoard = boardTranslatedLeft(state.board)
+      console.log("left!");
+      if(true) {
+        return Object.assign({}, state, {
+          board: populateBoard(newLeftBoard)
+        });
+      } else {
+        return state;
+      }
     case MOVE_RIGHT:
-      return Object.assign({}, state, {
-        board: boardTranslatedRight(board)
-      });
+    console.log("Board before translate: ");
+    console.log(state.board);
+      let newRightBoard = boardTranslatedRight(state.board)
+      // debugger;
+      console.log("right!");
+      console.log("board after translate:");
+      console.log(newRightBoard);
+      if(true) {
+        return Object.assign({}, state, {
+          board: populateBoard(newRightBoard)
+        });
+      } else {
+        return state;
+      }
     case MOVE_UP:
-      // if userCanMoveUp(board)
-          // do all this
-      // else
-        // return state
-      return Object.assign({}, state, {
-        board: boardTranslatedUp(board)
-      });
+      let newUpBoard = boardTranslatedUp(state.board)
+      console.log("up!");
+      if(true) {
+        return Object.assign({}, state, {
+          board: populateBoard(newUpBoard)
+        });
+      } else {
+        return state;
+      }
     case MOVE_DOWN:
-      return Object.assign({}, state, {
-        board: boardTranslatedDown(board)
-      });
+      let newDownBoard = boardTranslatedDown(state.board)
+      console.log("down!");
+      if(true) {
+        return Object.assign({}, state, {
+          board: populateBoard(newDownBoard)
+        });
+      } else {
+        return state;
+      }
     default:
+      console.log("default!");
       return state;
   }
 }
