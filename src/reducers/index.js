@@ -52,7 +52,6 @@ function coordinatesFromIndex(board, index) {
 
 function populateRandomTile(emptyNodes, board) {
   let options = [2, 4];
-  // let index = compose(shuffle, sample)(emptyNodes);
   let index = sample(shuffle(emptyNodes));
   let coord = coordinatesFromIndex(board, index);
   return board.map((row , yIndex) => {
@@ -82,7 +81,7 @@ function rotateBoardCCW(board) {
 
 function collapseRow(row, index) {
   let filler = [0,0,0,0];
-  let compactedRow = cojasmpact(row);
+  let compactedRow = compact(row);
   return filler.map((zero, index) => {
     if(compactedRow[index]) {
       return compactedRow[index]
