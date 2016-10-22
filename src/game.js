@@ -25,7 +25,7 @@ function collapseRow(row, index) {
 }
 
 export const rotateCW = function(board) {
-  return board.map((row, index) => verticalSlice(board, index).reverse());
+  return board.map((row, index) => reverse(verticalSlice(board, index)));
 }
 
 export const rotateCCW = function(board) {

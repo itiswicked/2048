@@ -4,21 +4,6 @@ import { compose } from 'underscore';
 
 import { MOVE_LEFT, MOVE_RIGHT, MOVE_UP, MOVE_DOWN } from './../actions/board';
 
-function reverse(array) {
-  let newArray = []
-  for(let i = array.length - 1; i > -1; i--) {
-    newArray.push(array[i])
-  }
-  return newArray;
-}
-
-// let rightTest = [
-//   [0,0,0,2],
-//   [0,0,0,2],
-//   [0,0,0,2],
-//   [0,0,0,2]
-// ];
-
 let theBoard = [
   [0,0,0,0],
   [0,0,0,0],
@@ -65,100 +50,13 @@ function populateRandomTile(emptyNodes, board) {
   });
 }
 
-function verticalSlice(board, index) {
-  return board.map(row => row[index])
-}
-
-function rotateBoardCW(board) {
-  return board.map((row, index) => verticalSlice(board, index).reverse());
-}
-
-function rotateBoardCCW(board) {
-  return board
-    .map(row => row.reverse())
-    .map((row, index) => verticalSlice(board, index));
-}
-
-function collapseRow(row, index) {
-  let filler = [0,0,0,0];
-  let compactedRow = compact(row);
-  return filler.map((zero, index) => {
-    if(compactedRow[index]) {
-      return compactedRow[index]
-    } else {
-      return zero;
-    }
-  })
-}
-
-// Moves non-zero values to the left
-function collapse(board) {
-  return board.map(collapseRow);
-}
-
-// merges adjacent, like numbers together
-// called after collapse stage
-function fold(board) {
-  let previousHasChanged = false
-  return  board.map(row => {
-    return row.map((cell, index) => {
-      if(previousHasChanged) {
-        previousHasChanged = false
-        return 0;
-      } else if(cell === row[index + 1]) {
-        previousHasChanged = true
-        return cell * 2;
-      } else {
-        return cell;
-      }
-    });
-  });
-}
 
 function populateBoard(board) {
   let emptyNodes = findEmptyNodes(board);
   return populateRandomTile(emptyNodes, board)
 }
 
-function boardTranslatedLeft(board) {
-  return compose(
-    collapse,
-    fold,
-    collapse
-  )(board);
-}
 
-function boardTranslatedRight(board) {
-  return compose(
-    rotateBoardCW,
-    rotateBoardCW,
-    collapse,
-    fold,
-    collapse,
-    rotateBoardCCW,
-    rotateBoardCCW
-  )(board);
-}
-
-function boardTranslatedUp(board) {
-  return compose(
-    rotateBoardCW,
-    collapse,
-    fold,
-    collapse,
-    rotateBoardCCW
-  )(board);
-}
-
-function boardTranslatedDown(board) {
-  return compose(
-    rotateBoardCCW,
-    collapse,
-    fold,
-    collapse,
-    rotateBoardCW
-  )(board);
-}
 
 function boardWithTwoTiles(board) {
   let emptyNodes = findEmptyNodes(board);
@@ -195,7 +93,6 @@ const board = function(state = initialState, action) {
     console.log("Board before translate: ");
     console.log(state.board);
       let newRightBoard = boardTranslatedRight(state.board)
-      // debugger;
       console.log("right!");
       console.log("board after translate:");
       console.log(newRightBoard);
